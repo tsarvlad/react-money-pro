@@ -1,0 +1,62 @@
+section.MuiBox-root.css-ogdgah {
+  display: flex;
+  justify-content: center;
+}
+
+.dark #navbarWall {
+  background-image: linear-gradient(0deg,
+      hsl(216deg 97% 13%) 15%,
+      hsl(222deg 43% 27%) 76%,
+      hsl(221deg 31% 33%) 91%,
+      hsl(220deg 18% 43%) 98%,
+      hsl(223deg 18% 72%) 100%);
+}
+
+.dark #footerWall {
+  background-image: linear-gradient(0deg,
+      hsl(216deg 53% 24%) 68%,
+      hsl(219deg 33% 32%) 88%,
+      hsl(221deg 23% 40%) 93%,
+      hsl(223deg 16% 48%) 96%,
+      hsl(224deg 15% 57%) 97%,
+      hsl(225deg 15% 65%) 98%,
+      hsl(225deg 15% 74%) 99%,
+      hsl(226deg 16% 82%) 99%,
+      hsl(226deg 16% 91%) 100%,
+      hsl(0deg 0% 100%) 100%);
+}
+
+.dark #userPanelBackgroundWall,
+.dark #editOverlay {
+  background-image: linear-gradient(to bottom, #f2f2f7, #d1d1d6)
+}
+
+/* [&>*]:dark:text-white [&>*]:dark:text-lg [&>*]:dark:font-semibold */
+
+.dark .darkTextFields,
+.dark .darkTextFields>*,
+.dark .darkTextFields p {
+  color: whitesmoke;
+  font-size: large;
+  font-weight: bold;
+}
+
+;
+
+#registerWall {
+  background: linear-gradient(109.6deg, rgb(245, 239, 249) 30.1%, rgb(207, 211, 236) 100.2%);
+}
+
+#loginWall {
+  background: radial-gradient(circle at 10% 20%, rgba(216, 241, 230, 0.46) 0.1%, rgba(233, 226, 226, 0.28) 90.1%);
+}
+
+:root.dark {
+  background: rgb(0, 0, 0, 0.1);
+}
+
+.dark #globalWall,
+.dark #profilePage {
+  background: rgb(169, 178, 199);
+  background: radial-gradient(circle, rgba(169, 178, 199, 1) 2%, rgba(223, 227, 234, 1) 100%);
+}
