@@ -23,7 +23,7 @@ export default function ImgMediaCard({ header, content, image }: ImgMediaCard) {
             <CardMedia
                 className='brightness-[0.92] dark:brightness-[0.8]'
                 component="img"
-                alt="green iguana"
+                alt="Demonstration of work"
                 height="140"
                 sx={{ maxHeight: '436px' }}
                 image={image}
