@@ -198,7 +198,6 @@ function Navbar() {
                                 ))}
                             </Menu>
                         </Box>
-                        <SavingsIcon className={defaultDarkSettings} sx={{ display: { xs: 'flex', md: 'none' }, ml: 11, mr: 1 }} />
                         <Typography className={defaultDarkSettings}
                             variant="h5"
                             noWrap
@@ -215,7 +214,7 @@ function Navbar() {
                                 textDecoration: 'none',
                             }}
                         >
-                            FINSTRA
+                            <SavingsIcon className={defaultDarkSettings + "hidden md:visible"} sx={{ display: { xs: 'flex', md: 'none' }, ml: 11, mr: 1 }} />
                         </Typography>
                         <IconButton className={defaultDarkSettings} onClick={handleThemeChange} sx={{ display: { xs: 'flex', md: 'none' }, px: 0, ml: 3, mr: 2, }}>
                             {isDarkTheme ? <NightsStayIcon /> : <LightModeIcon />}
