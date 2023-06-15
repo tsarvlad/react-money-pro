@@ -5,12 +5,13 @@ import { Button } from '@mui/material'
 import LoginIcon from '@mui/icons-material/Login';
 import { useSelector } from 'react-redux';
 
+import dashboardImg from './assets/image-dashboard.png'
 
 const AboutUs = () => {
     const navigate = useNavigate()
     const user = useSelector((state: any) => state.user)
     return (
-        <div className="min-h-[calc(100vh-140px)] xl:w-[80%]'">
+        < div className="min-h-[calc(100vh-140px)] xl:w-[80%]'" >
             <div className="header flex flex-col-reverse justify-between 
             [&>*]:2xl:w-[47%] 2xl:p-24 2xl:pt-14 2xl:px-32 2xl:flex-row
             [&>*]:xl:
@@ -45,7 +46,7 @@ lg:text-3xl lg:text-center lg:w-[80%] w-[80%] self-center lg:mb-5 mb-3 text-lg t
                 </div>
                 <div className='xl:m-auto mt-4 sm:mt-6 lg:mt-12
                                  2xl:m-0'>
-                    <img className='rounded-3xl px-12 2xl:px-0 blur-none lg:blur-sm 2xl:blur-none lg:z-10' src='image-dashboard.png' alt="Demonstration of Finstra Dashboard" />
+                    <img className='rounded-3xl px-12 2xl:px-0 blur-none lg:blur-sm 2xl:blur-none lg:z-10' src='/image-dashboard.png' alt="Demonstration of Finstra Dashboard" />
                 </div>
             </div>
             <div className="created-for-people bg-mediumblue pt-16 pb-12 px-8 sm:px-16 md:px-32 [&>*]:text-white [&>*]:text-center flex flex-col"
@@ -69,13 +70,13 @@ lg:text-3xl lg:text-center lg:w-[80%] w-[80%] self-center lg:mb-5 mb-3 text-lg t
                 ">
                     <div className='hover:-translate-y-4 hover:scale-[104%] hover:drop-shadow-2xl'
                         onClick={() => navigate('/global')}>
-                        <ImgMediaCard header='Global Users' image='global-users-dashboard.png'
+                        <ImgMediaCard header='Global Users' image='/global-users-dashboard.png'
                             content='Explore the complete financial portfolios of all users and identify the assets held by influential individuals with significant financial power.'
                         />
                     </div>
                     <div className='hover:-translate-y-4 hover:scale-[104%] hover:drop-shadow-2xl'
                         onClick={() => navigate('/dashboard')}>
-                        <ImgMediaCard header='Personal Dashboard' image='image-dashboard-dark.png'
+                        <ImgMediaCard header='Personal Dashboard' image='/image-dashboard-dark.png'
                             content='Access your personal financial portfolio dashboard and compare it with the portfolios of users worldwide.' />
                     </div>
 
