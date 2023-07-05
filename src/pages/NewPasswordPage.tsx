@@ -91,8 +91,6 @@ const NewPasswordPage = () => {
             formData.append(input, data[input])
         }
 
-        console.log(formData.get('newPassword'))
-
 
         const request = await fetch(`${import.meta.env.VITE_PROJECT_BASE_URL}/auth/${user._id}/newPassword`,
             {
@@ -104,8 +102,6 @@ const NewPasswordPage = () => {
             }
         )
         const response = await request.json()
-        console.log(request)
-        console.log(response)
         if (!request?.ok) {
             toast.error(response.msg)
         } else {

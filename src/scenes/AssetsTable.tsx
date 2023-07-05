@@ -26,7 +26,7 @@ type Props = {
 
 function ticker(sign: string) {
     let positivestring = `text-green dark:text-white dark:border-2 dark:border-darkgreen dark:bg-green dark:rounded-md dark:max-w-[8rem] dark:font-black dark:text-lg dark:text-center whitespace-nowrap`
-    let negativestring = `text-red dark:text-white dark:border-2 dark:border-redgreen dark:bg-red dark:rounded-md dark:max-w-[8rem] dark:font-black dark:text-lg dark:text-center whitespace-nowrap`
+    let negativestring = `text-red dark:text-white dark:border-2 dark:border-darkred dark:bg-red dark:rounded-md dark:max-w-[8rem] dark:font-black dark:text-lg dark:text-center whitespace-nowrap`
     return sign ? positivestring : negativestring
 }
 
@@ -44,7 +44,7 @@ function calculatePercentage(data: any, value: number) {
 
 function calculateAnnualChange(data: AssetReport[], row: AssetReport) {
     let match = null
-    let returnable = { value: "New Asset", sign: 'neutral' }
+    let returnable = { value: "New Asset", sign: true }
 
     if (!data || !row) {
         return returnable
@@ -63,18 +63,17 @@ function calculateAnnualChange(data: AssetReport[], row: AssetReport) {
             const percentageChange = (difference / lastYear) * 100;
             returnable = {
                 value: `+ $${Math.abs(Math.round(percentageChange * 100) / 100).toLocaleString('en-GB')}`,
-                sign: 'positive'
+                sign: true
             };
         } else {
             const difference = lastYear - today;
             const percentageChange = (difference / lastYear) * 100;
             returnable = {
                 value: `- $${Math.abs(Math.round(percentageChange * 100) / 100)} `,
-                sign: 'negative'
+                sign: false
             };
         }
     }
-    console.log(data, row)
     return returnable
 }
 
