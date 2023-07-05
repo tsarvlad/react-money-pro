@@ -125,7 +125,7 @@ const PublicProfile = () => {
                         </div>
                     </div>
                 </div>
-                <div className=''>
+                <div className='mb-5'>
                     <div>
                         <MainChart props={{ pieData, stackedAreaChart, data, data1y, portfolio1y, stackedAreaChart1Y, allAssets }} />
                     </div>

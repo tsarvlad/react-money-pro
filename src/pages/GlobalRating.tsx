@@ -124,6 +124,151 @@ const columns: GridColDef[] = [
     },
 ];
 
+const tabletColumns: GridColDef[] = [
+        {
+            field: 'index',
+            headerName: 'Power',
+            width: 70,
+            align: 'center',
+            headerAlign: 'center',
+            disableColumnMenu: true,
+            renderCell: (params: any) => {
+                return (
+                    <>
+                        <div className='text-sm'>{params.value}</div >
+                    </>
+                )
+            }
+        },
+        {
+            field: 'picturePath', headerName: "", width: 70, sortable: false,
+            renderCell: (params: any) => {
+                return (
+                    <Link className="hover:opacity-75" to={`/global/${params.row.id}`}>
+                        <Avatar src={params.value}></Avatar>
+                    </Link>
+                )
+            }
+        },
+        {
+            field: 'fullName',
+            headerName: 'Full name',
+            disableColumnMenu: true,
+            sortable: false,
+            align: 'left',
+            headerAlign: 'center',
+            width: 180,
+            renderCell: (params: any) => {
+                return (
+                    <>
+                        <Link to={`/global/${params.row.id}`}>
+                            <div className='text-lg font-medium hover:text-sky'>{params.row.firstName} {params.row.lastName}</div >
+                        </Link>
+                    </>
+                )
+            }
+            // valueGetter: (params: GridValueGetterParams) =>
+            //     `${params.row.firstName || ''} ${params.row.lastName || ''}`,
+        },
+    
+        {
+            field: 'value',
+            headerName: 'Net Worth',
+            type: 'number',
+            align: 'center',
+            headerAlign: 'center',
+            width: 250,
+            renderCell: (params: any) => {
+                return (
+                    <>
+                        <div className='font-extrabold text-xl'>${params.value.toLocaleString('en-GB')}</div>
+                    </>
+                )
+            }
+        },
+        
+]
+
+const laptopColumns: GridColDef[] = [
+    {
+        field: 'index',
+        headerName: 'Power',
+        width: 70,
+        align: 'center',
+        headerAlign: 'center',
+        disableColumnMenu: true,
+        renderCell: (params: any) => {
+            return (
+                <>
+                    <div className='text-sm'>{params.value}</div >
+                </>
+            )
+        }
+    },
+    {
+        field: 'picturePath', headerName: "", width: 70, sortable: false,
+        renderCell: (params: any) => {
+            return (
+                <Link className="hover:opacity-75" to={`/global/${params.row.id}`}>
+                    <Avatar src={params.value}></Avatar>
+                </Link>
+            )
+        }
+    },
+    {
+        field: 'fullName',
+        headerName: 'Full name',
+        disableColumnMenu: true,
+        sortable: false,
+        align: 'left',
+        headerAlign: 'center',
+        width: 180,
+        renderCell: (params: any) => {
+            return (
+                <>
+                    <Link to={`/global/${params.row.id}`}>
+                        <div className='text-lg font-medium hover:text-sky'>{params.row.firstName} {params.row.lastName}</div >
+                    </Link>
+                </>
+            )
+        }
+        // valueGetter: (params: GridValueGetterParams) =>
+        //     `${params.row.firstName || ''} ${params.row.lastName || ''}`,
+    },
+
+    {
+        field: 'value',
+        headerName: 'Net Worth',
+        type: 'number',
+        align: 'center',
+        headerAlign: 'center',
+        width: 250,
+        renderCell: (params: any) => {
+            return (
+                <>
+                    <div className='font-extrabold text-xl'>${params.value.toLocaleString('en-GB')}</div>
+                </>
+            )
+        }
+    },
+    {
+        field: 'change',
+        headerName: 'Change 1Y',
+        type: 'number',
+        align: 'center',
+        headerAlign: 'center',
+        width: 200,
+        renderCell: (params: any) => {
+            return (
+                <>
+                    <div className={`font-bold ${ticker(Boolean(params.value > 0))} text-[${params.value > 0 ? `#85bb65` : `#aa381e`}]`}>{displayChange1Y(params.value, true)}</div >
+                </>
+            )
+        }
+    },
+    
+]
+
 const mobileColumns: GridColDef[] = [
     {
         field: 'index',
@@ -169,7 +314,9 @@ const mobileColumns: GridColDef[] = [
 
 
 export default function DataTable() {
-    const isMobileScreen: Boolean = !useMediaQuery('(min-width: 600px)')
+    const isMobileScreen: boolean = !useMediaQuery('(min-width: 580px)')
+    const isTabletScreen: boolean = !useMediaQuery('(min-width: 780px)')
+    const isLaptopScreen: boolean = !useMediaQuery('(min-width: 960px)')
     const [id, index, lastName, firstName, value, picturePath, change, percentage] = [0, 1, 'Oistrkh', 'Heifetz', 100_000, 'https://res.cloudinary.com/dblahw3li/image/upload/v1681108691/Portfolio/pozf2pz73iclr4pdt2il.jpg', 1, 1000]
     const [data, setData] = React.useState(
         [
@@ -211,6 +358,16 @@ export default function DataTable() {
         }
     }, [])
 
+    const displayType = (mobile:boolean,tablet:boolean,mobilec:GridColDef[],tabletc:GridColDef[],c:GridColDef[]): any => {
+        if (mobile) {
+            return mobilec
+        }
+        else if (tablet) {
+            return tabletc
+        }
+        else return c
+    }
+    
     return (
         <div id='globalWall' className='min-h-[calc(100vh-140px)]'>
             {loading && <Spinner blur={true} />}
@@ -219,7 +376,12 @@ export default function DataTable() {
                 <div className="mt-5" style={{ height: 631, width: 942 }}>
                     <DataGrid
                         rows={data}
-                        columns={isMobileScreen ? mobileColumns : columns}
+                        columns={
+                            isMobileScreen ? mobileColumns 
+                            : isTabletScreen ? tabletColumns 
+                            : isLaptopScreen ? laptopColumns
+                            : columns
+                        }
                         autoPageSize={true}
                         sortModel={sortModel}
                         onSortModelChange={(model) => setSortModel(model)}

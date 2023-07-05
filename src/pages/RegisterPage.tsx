@@ -118,7 +118,6 @@ const RegisterPage = () => {
                 }
             )
             const savedUser = await savedUserResponse.json();
-            console.log(savedUser, savedUserResponse)
             setLoading(false)
             if (savedUserResponse.statusText === 'Bad Request') {
                 toast.error(savedUser.msg)
