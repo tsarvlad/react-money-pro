@@ -1,8 +1,5 @@
 {
     "rewrites": [
-        {
-            "source": "/https://react-money-server-git-master-vladtsar1337.vercel.app/user/:user*/report",
-        },
       {
         "source": "/(.*)",
         "destination": "/index.html"
