@@ -1,1 +1,7 @@
-{ "routes": [{ "src": "/[^.]+", "dest": "/", "status": 200 }] }
+{
+    "rewrites": [
+      { "source": "/api/(.*)", "destination": "/api/\$1" },
+      { "source": "/(.*)", "destination": "/index.html" }
+    ]
+  }
+  
