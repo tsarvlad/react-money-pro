@@ -62,18 +62,19 @@ function calculateAnnualChange(data: AssetReport[], row: AssetReport) {
             const difference = today - lastYear
             const percentageChange = (difference / lastYear) * 100;
             returnable = {
-                value: `+ $${Math.abs(Math.round(percentageChange * 100) / 100).toLocaleString('en-GB')}`,
+                value: `+ $${Math.abs(Math.round(difference * 100) / 100).toLocaleString('en-GB')}`,
                 sign: true
             };
         } else {
             const difference = lastYear - today;
             const percentageChange = (difference / lastYear) * 100;
             returnable = {
-                value: `- $${Math.abs(Math.round(percentageChange * 100) / 100)} `,
+                value: `- $${Math.abs(Math.round(difference * 100) / 100)} `,
                 sign: false
             };
         }
     }
+    console.log(data, row)
     return returnable
 }
 
