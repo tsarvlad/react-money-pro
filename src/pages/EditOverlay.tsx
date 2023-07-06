@@ -148,25 +148,25 @@ const EditOverlay = () => {
         flex justify-center items-center 
         bg-[rgba(0,0,0,0.3)] ${overlay && 'hidden'}`
         } onClick={() => dispatch(setClickOverlay())}>
-            <div className="bg-white w-full sm:w-[40%] p-6 rounded-3xl" id='editOverlay' onClick={e => e.stopPropagation()}>
+            <div className="bg-white w-full sm:w-[80%] md:w-[60%] lg:w-[45%] p-6 rounded-3xl" id='editOverlay' onClick={e => e.stopPropagation()}>
                 <div className="font-extralight text-2xl text-center mb-6">Edit Portfolio</div>
                 <div>
                     <TableContainer component={Paper} className="max-h-[650px] overflow-auto "
                     >
                         <Table aria-label="simple table">
                             <TableHead sx={{ background: 'rgba(213,213,213,0.5)' }} className="dark:bg-strongblue">
-                                <TableRow className="[&>*]:dark:text-white [&>*]:dark:border-0">
+                                <TableRow className="[&>*]:dark:text-white [&>*]:dark:border-0 ">
                                     <TableCell>Name</TableCell>
                                     <TableCell>Quantity</TableCell>
                                     <TableCell>Price</TableCell>
                                     <TableCell></TableCell>
                                 </TableRow>
                             </TableHead>
-                            <TableBody>
+                            <TableBody >
                                 {data.map((row: any, index: any) => (
                                     <TableRow key={index}
                                         sx={{ backgroundColor: isDarkTheme ? tableColour(index) : '' }}
-                                        className="[&>*]:dark:border-b-[gray]">
+                                    className="[&>*]:dark:border-b-[gray] ">
                                         <TableCell><TextField className='darkTextFields'
                                             id={`${index}_name`} variant="standard" defaultValue={row.name} onChange={(e) => handleChangeName(e, row)}></TextField></TableCell>
                                         <TableCell><TextField className='darkTextFields' id={`${index}_quantity`} size='small' variant='standard' type='number' defaultValue={row.quantity} onChange={(e) => handleChangeQuantity(e, row)}></TextField></TableCell>

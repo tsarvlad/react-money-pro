@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material'
 import LoginIcon from '@mui/icons-material/Login';
 import { useSelector } from 'react-redux';
-
+import {motion} from 'framer-motion'
 import dashboardImg from './assets/image-dashboard.png'
 
 const AboutUs = () => {
@@ -13,17 +13,16 @@ const AboutUs = () => {
     return (
         < div className="min-h-[calc(100vh-140px)] xl:w-[80%]'" >
             <div className="header flex flex-col-reverse justify-between 
-            [&>*]:2xl:w-[47%] 2xl:p-24 2xl:pt-14 2xl:px-32 2xl:flex-row
-            [&>*]:xl:
+             2xl:pt-14  2xl:flex-row
 
             ">
-                <div className='flex flex-col lg:absolute 2xl:static lg:-translate-y-48 lg:z-20 2xl:translate-y-0'>
+        <div className='flex flex-col lg:absolute lg:-translate-y-48 lg:z-20 2xl:translate-y-56 2xl:w-full'>
                     <p className='font-thin my-10
-                    2xl:text-8xl
+                    
                     lg:text-5xl lg:text-center
                     text-4xl self-center 
                     '>Watch your spending</p>
-                    <h2 className='2xl:text-5xl font-light
+                    <h2 className=' font-light
 lg:text-3xl lg:text-center lg:w-[80%] w-[80%] self-center lg:mb-5 mb-3 text-xl text-center 
                                         '>Use Finsta app to gain retrospective insights into your money management and make informed decisions based on your record.</h2>
                     <div className="button-group  flex flex-col sm:flex-row mt-auto mb-4 md:mb-12  m-auto
@@ -43,10 +42,10 @@ lg:text-3xl lg:text-center lg:w-[80%] w-[80%] self-center lg:mb-5 mb-3 text-xl t
                             </>
                         }
                     </div>
-                </div>
+                    </div>
                 <div className='xl:m-auto mt-4 sm:mt-6 lg:mt-12
-                                 2xl:m-0'>
-                    <img className='rounded-3xl px-12 2xl:px-0 blur-none lg:blur-sm 2xl:blur-none lg:z-10' src='/image-dashboard.png' alt="Demonstration of Finstra Dashboard" />
+                                '>
+                    <img className='rounded-3xl px-12 2xl:px-0 blur-none lg:blur-sm lg:z-10' src='/image-dashboard.png' alt="Demonstration of Finstra Dashboard" />
                 </div>
             </div>
             <div className="created-for-people bg-mediumblue pt-16 pb-12 px-8 sm:px-16 md:px-32 [&>*]:text-white [&>*]:text-center flex flex-col"
