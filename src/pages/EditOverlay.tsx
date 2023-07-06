@@ -66,6 +66,7 @@ const EditOverlay = () => {
                 }
             )
             const response = await sendReport.json();
+            console.log(response)
             if (response.statusText === 'Bad Request') {
                 toast.error(`Can't connect to server, sorry!`)
             } else {
@@ -136,8 +137,8 @@ const EditOverlay = () => {
         })
     }
 
-    const submitFunc = () => {
-        handleSave(data)
+    const submitFunc =  async() => {
+        await handleSave(data)
         dispatch(setClickOverlay())
         window.location.reload()
     }
