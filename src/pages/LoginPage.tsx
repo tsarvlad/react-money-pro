@@ -130,6 +130,7 @@ const LoginPage = () => {
                                     error={isTouched && Boolean(errors.email)}
                                     helperText={isTouched && errors.email?.message}
                                     autoComplete='email'
+                                    defaultValue={'testaccount@gmail.com'}
                                     fullWidth
                                 />
                             </Grid>
@@ -141,6 +142,7 @@ const LoginPage = () => {
                                     error={isTouched && Boolean(errors.password)}
                                     helperText={isTouched && errors.password?.message}
                                     autoComplete='current-password'
+                                    defaultValue={'testaccount'}
                                     fullWidth
                                     autoFocus />
                             </Grid>
