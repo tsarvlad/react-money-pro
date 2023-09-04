@@ -11,6 +11,7 @@ import { useDispatch } from "react-redux";
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import classNames from "classnames";
 import { useNavigate } from "react-router-dom";
+import { gridColumnsTotalWidthSelector } from "@mui/x-data-grid";
 type AssetReport = {
     id: string;
     name: string;
@@ -27,7 +28,7 @@ const EditOverlay = () => {
     const overlay = useSelector((state: any) => state.overlay)
 
     const isDarkTheme = useSelector((state: any) => state.isDarkTheme)
-    const [data, setData] = useState<any>(false)
+    const [data, setData] = useState<[]>([])
     const [trigger, setTrigger] = useState<boolean>(true)
     const user = useSelector((state: any) => state.user)
     const token = useSelector((state: any) => state.token)
@@ -78,12 +79,11 @@ const EditOverlay = () => {
 
     }
     const deleteItem = (row: any) => {
-        setData((prev: any) => prev.filter(function (data: any) {
-            return row.id !== data.id
-        }))
+        const temp = data.filter((item:any) => item.id !== row.id)
+        setData(temp)
     }
 
-    const addEmptySpace = () => {
+    const addEmptySpace = () =>  {
         setTrigger(prev => !prev)
         setData((prev: any) => [...prev, { id: uuidv4(), name: "Asset", quantity: 1, price: 1 }])
         setTrigger(prev => !prev)
@@ -191,7 +191,7 @@ const EditOverlay = () => {
                                         className="dark:bg-blue hover:dark:bg-darkblue"
                                         variant='contained'><AddCircleOutlineIcon /></Button></TableCell>
                                 </TableRow>
-                            </TableBody>
+                            </TableBody> 
                         </Table>
                     </TableContainer >
                     <div className="flex justify-center">
