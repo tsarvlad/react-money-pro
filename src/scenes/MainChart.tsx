@@ -1,9 +1,10 @@
-import { AreaChart, Area, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { ToggleButtonGroup, ToggleButton, TextField, Typography } from '@mui/material'
+import { AreaChart, Area, PieChart, Pie, BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { ToggleButtonGroup, ToggleButton } from '@mui/material'
 import { useState } from 'react';
 import SsidChartIcon from '@mui/icons-material/SsidChart';
 import PieChartIcon from '@mui/icons-material/PieChart';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
+import BarChartIcon from '@mui/icons-material/BarChart';
 import { useSelector } from 'react-redux';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
@@ -45,7 +46,11 @@ const MainChart: React.FC<Props> = ({ props: { pieData, stackedAreaChart, data, 
     const [chartType, setChartType] = useState('line')
     const [timeline, setTimeline] = useState('1Y')
 
-    const COLORS = ['#27ae60', '#f1c40f', '#e74c3c', '#3498db', '#9b59b6', '#8c7ae6', '#487eb0'];
+    const COLORS = [
+        '#27ae60', '#f1c40f', '#e74c3c', '#3498db', '#9b59b6', '#8c7ae6', '#487eb0',
+        '#1abc9c', '#2ecc71', '#e67e22', '#d35400', '#2980b9', '#8e44ad', '#34495e',
+        '#f39c12', '#c0392b', '#7f8c8d', '#16a085', '#27ae60', '#9b59b6', '#f1c40f'
+    ];
     const user = useSelector((state: any) => state.user)
     const token = useSelector((state: any) => state.token)
 
@@ -160,6 +165,28 @@ const MainChart: React.FC<Props> = ({ props: { pieData, stackedAreaChart, data, 
         }
     }
 
+    const CustomTooltipBar: any = ({ active, payload }: any) => {
+        if (active && payload && payload.length) {
+            return (
+                <div
+                    className="custom-tooltip"
+                    style={{
+                        backgroundColor: "#fff",
+                        padding: "5px",
+                        border: "1px solid #cccc"
+                    }}
+                >
+                    <label><span className='font-bold'>{`${payload?.[0]?.payload?.name}`}</span> : <span  style={{ textAlign: 'right',display: 'inline-block' }}
+                                                                                                          className='font-bold text-lg'>${(payload[0].value).toFixed(2)}</span></label>
+                    <br/>
+                    <label><span className='font-bold'>{`Net share`}</span> : <span   style={{ textAlign: 'right',display: 'inline-block' }}
+                                                                                      className='font-bold text-lg ml-0'>{((payload[0].value / data[data?.length - 1].value) * 100).toFixed(2)}%</span></label>
+
+                </div>
+            );
+        }
+        return null;
+    }
 
     const CustomTooltipPie: any = ({ active, payload, label }: any) => {
         if (active) {
@@ -210,6 +237,24 @@ const MainChart: React.FC<Props> = ({ props: { pieData, stackedAreaChart, data, 
                     <Tooltip content={CustomTooltipStackedArea} />
                     {stackedChartAreas()}
                 </AreaChart>
+            case "bar":
+                const reversedPieData = [...pieData].reverse()
+                return <BarChart width={500} height={300} data={reversedPieData}>
+                    <CartesianGrid strokeDasharray=" 3 3" />
+                    <Bar
+                        dataKey="value"
+                        name="Asset Value"
+                        fill="#8884d8"
+                        radius={[10, 10, 0, 0]} //rounding for bars
+                    >
+                        {pieData.map((_, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[pieData.length - 1 - index % COLORS?.length]} />
+                        ))}
+                    </Bar>
+                    <Tooltip content={<CustomTooltipBar />} cursor={{ opacity: 0.1, fill: COLORS[3] }} />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                </BarChart>
             case "pie":
                 return <PieChart width={500} height={300}>
                     <Pie
@@ -251,7 +296,6 @@ const MainChart: React.FC<Props> = ({ props: { pieData, stackedAreaChart, data, 
                     <XAxis dataKey="name" />
                     <YAxis />
                     <Tooltip wrapperStyle={{ outline: 'none' }} content={CustomTooltipArea} />
-                    <Legend />
                     <Area type="monotone" dataKey="value" stroke="#8884d8" activeDot={{ r: 8 }} />
                 </AreaChart>
         }
@@ -291,6 +335,9 @@ const MainChart: React.FC<Props> = ({ props: { pieData, stackedAreaChart, data, 
                                 <ToggleButton value="stacked" key="stacked">
                                     <SsidChartIcon />
                                 </ToggleButton>,
+                                <ToggleButton value="bar" key="bar">
+                                    <BarChartIcon />
+                                </ToggleButton>,
                                 <ToggleButton value="pie" key="pie">
                                     <PieChartIcon />
                                 </ToggleButton>,
@@ -298,7 +345,7 @@ const MainChart: React.FC<Props> = ({ props: { pieData, stackedAreaChart, data, 
                             <div className="self-end hidden sm:block font-extralight">
                                 {new Date().toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric', timeZoneName: 'long' })}
                             </div>
-                            {chartType === 'pie' ? '' : <ToggleButtonGroup exclusive
+                            {['bar', 'pie'].includes(chartType) ? '' : <ToggleButtonGroup exclusive
                                 // orientation={`${isMobileScreen ? 'vertical' : 'horizontal'}`}
                                 size="small" value={timeline} onChange={handleChangeTimeline} aria-label="Small sizes">
                                 <ToggleButton value="1Y" key="1Y">

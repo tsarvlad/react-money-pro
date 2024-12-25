@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import MainChart from '../scenes/MainChart'

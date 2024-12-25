@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { useEffect, useState } from 'react'
 import { Table, Typography, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TextField, colors } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
