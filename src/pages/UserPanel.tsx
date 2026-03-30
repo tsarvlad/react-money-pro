@@ -96,7 +96,7 @@ const UserPanel = () => {
          min-h-[calc(100vh-140px)]
          '>
             {loading && <Spinner blur={true} />}
-            <MainChart props={{ pieData, stackedAreaChart, data, data1y, portfolio1y, stackedAreaChart1Y, allAssets }} />
+            <MainChart props={{ pieData, stackedAreaChart, data, data1y, portfolio1y, stackedAreaChart1Y, allAssets, tableData }} />
             <div className='assets-container flex justify-center items-center mt-20 mb-8'>
                 <div className="table w-[80%]">
                     <AssetsTable tableData={tableData} tableLastYearData={tablelastYearData} />

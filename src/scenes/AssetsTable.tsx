@@ -88,7 +88,7 @@ const AssetsTable: React.FC<Props> = ({ tableData, tableLastYearData }) => {
         <>
             <div className='flex justify-center mb-2'>
                 <div className='flex flex-row justify-between w-[98%]'>
-                    <div className='text-xl dark:text-white'>Your Assets</div>
+                    <div className='text-xl font-semibold tracking-wide text-gray-700 dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-b dark:from-[#e8e8e8] dark:to-[#a8a8a8]' style={{ textShadow: 'none' }}>Your Assets</div>
                     <Button 
                         sx={{ 
                             background: isDarkTheme ? '#42587a' : '#547fa9', 

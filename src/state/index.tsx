@@ -20,7 +20,7 @@ const initialState = {
     user: null,
     token: null,
     overlay: false,
-    isDarkTheme: false,
+    isDarkTheme: true,
     tags: []
 }
 
