@@ -75,7 +75,6 @@ function calculateAnnualChange(data: AssetReport[], row: AssetReport) {
             };
         }
     }
-    console.log(data, row)
     return returnable
 }
 
@@ -89,10 +88,19 @@ const AssetsTable: React.FC<Props> = ({ tableData, tableLastYearData }) => {
         <>
             <div className='flex justify-center mb-2'>
                 <div className='flex flex-row justify-between w-[98%]'>
-                    <div className='text-xl dark:text-[#010101]'>Your Assets</div>
-                    <Button sx={{ background: '#547fa9', "&:hover": { background: '#302c29', } }} size='medium' variant='contained' onClick={() => dispatch(setClickOverlay())}
-                        className='dark:bg-mediumblue
-                        '>Edit</Button>
+                    <div className='text-xl dark:text-white'>Your Assets</div>
+                    <Button 
+                        sx={{ 
+                            background: isDarkTheme ? '#42587a' : '#547fa9', 
+                            "&:hover": { background: isDarkTheme ? '#31436e' : '#302c29', } 
+                        }} 
+                        size='medium' 
+                        variant='contained' 
+                        onClick={() => dispatch(setClickOverlay())}
+                        className='dark:bg-mediumblue'
+                    >
+                        Edit
+                    </Button>
                 </div>
 
             </div>

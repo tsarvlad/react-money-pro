@@ -20,7 +20,8 @@ const initialState = {
     user: null,
     token: null,
     overlay: false,
-    isDarkTheme: false
+    isDarkTheme: false,
+    tags: []
 }
 
 const authSlice = createSlice({
@@ -41,9 +42,12 @@ const authSlice = createSlice({
         },
         setIsDarkTheme: (state) => {
             state.isDarkTheme = !state.isDarkTheme
+        },
+        setTags: (state, action) => {
+            state.tags = action.payload.tags
         }
     }
 })
 
-export const { setLogin, setLogout, setClickOverlay, setIsDarkTheme } = authSlice.actions;
+export const { setLogin, setLogout, setClickOverlay, setIsDarkTheme, setTags } = authSlice.actions;
 export default authSlice.reducer;
