@@ -44,6 +44,11 @@ const EditOverlay = () => {
     const [newTagName, setNewTagName] = useState("")
     const [newOptionName, setNewOptionName] = useState<{ [tagId: string]: string }>({})
     const [view, setView] = useState<"portfolio" | "tags">("portfolio")
+    const [expandedTag, setExpandedTag] = useState<string | null>(null)
+    const [editingTagId, setEditingTagId] = useState<string | null>(null)
+    const [editingTagValue, setEditingTagValue] = useState("")
+    const [editingOptionId, setEditingOptionId] = useState<string | null>(null)
+    const [editingOptionValue, setEditingOptionValue] = useState("")
     
     const user = useSelector((state: any) => state.user)
     const token = useSelector((state: any) => state.token)
@@ -125,12 +130,15 @@ const EditOverlay = () => {
                 },
                 body: JSON.stringify({ name: optionName })
             })
+            if (!response.ok) throw new Error("Server error")
             const updatedTags = await response.json()
             if (Array.isArray(updatedTags)) {
                 dispatch(setTags({ tags: updatedTags }))
+                setNewOptionName(prev => ({ ...prev, [tagId]: "" }))
+                toast.success("Option added!")
+            } else {
+                toast.error("Failed to add option")
             }
-            setNewOptionName(prev => ({ ...prev, [tagId]: "" }))
-            toast.success("Option added!")
         } catch (error) {
             toast.error("Failed to add option")
         }
@@ -284,28 +292,85 @@ const EditOverlay = () => {
     const safeTags = Array.isArray(tags) ? tags : [];
 
     return (
-        trigger && data && (<div className={`fixed top-0 left-0 h-screen w-screen 
+        trigger && data && (<div className={`fixed top-0 left-0 h-screen w-screen
         flex justify-center items-start pt-20 z-[1200]
-        bg-[rgba(0,0,0,0.4)] ${overlay && 'hidden'}`
+        bg-[rgba(0,0,0,0.6)] ${overlay && 'hidden'}`
         } onClick={() => dispatch(setClickOverlay())}>
-            <div className="bg-white w-full sm:w-[90%] md:w-[80%] lg:w-[60%] p-6 rounded-3xl" id='editOverlay' onClick={e => e.stopPropagation()}>
-                <div className="font-extralight text-2xl text-center mb-6">Edit Portfolio</div>
-                
-                <div className="flex justify-center gap-4 mb-4">
-                    <Button 
-                        onClick={() => setView("portfolio")} 
-                        variant={view === "portfolio" ? "contained" : "outlined"}
-                        sx={{ borderRadius: '20px' }}
-                    >
-                        Portfolio
-                    </Button>
-                    <Button 
-                        onClick={() => setView("tags")} 
-                        variant={view === "tags" ? "contained" : "outlined"}
-                        sx={{ borderRadius: '20px' }}
-                    >
-                        Tags
-                    </Button>
+            <div
+                id='editOverlay'
+                onClick={e => e.stopPropagation()}
+                style={{
+                    background: 'linear-gradient(180deg, #e8e8e8 0%, #d0d0d0 100%)',
+                    borderRadius: '18px',
+                    boxShadow: '0 20px 60px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.9)',
+                    border: '1px solid #888',
+                    padding: '0',
+                    overflow: 'hidden',
+                }}
+                className="w-full sm:w-[90%] md:w-[80%] lg:w-[60%]"
+            >
+                {/* iOS 6 chrome title bar */}
+                <div style={{
+                    background: 'linear-gradient(180deg, #6e6e6e 0%, #4a4a4a 45%, #3a3a3a 50%, #525252 100%)',
+                    padding: '14px 20px 12px',
+                    borderBottom: '1px solid #222',
+                    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.25)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}>
+                    <span style={{
+                        color: '#fff',
+                        fontSize: '17px',
+                        fontWeight: '700',
+                        fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif',
+                        letterSpacing: '0.5px',
+                        textShadow: '0 -1px 0 rgba(0,0,0,0.6)',
+                    }}>Edit Portfolio</span>
+                </div>
+
+                <div style={{ padding: '16px 24px 20px' }}>
+                {/* iOS 6 segmented control */}
+                <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    marginBottom: '16px',
+                }}>
+                    <div style={{
+                        display: 'inline-flex',
+                        borderRadius: '9px',
+                        border: '1px solid #4a7abf',
+                        overflow: 'hidden',
+                        boxShadow: '0 2px 4px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.15)',
+                    }}>
+                        {(['portfolio', 'tags'] as const).map((tab, i) => {
+                            const active = view === tab
+                            return (
+                                <button
+                                    key={tab}
+                                    onClick={() => setView(tab)}
+                                    style={{
+                                        padding: '7px 28px',
+                                        fontSize: '13px',
+                                        fontWeight: '700',
+                                        fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif',
+                                        letterSpacing: '0.3px',
+                                        border: 'none',
+                                        borderLeft: i > 0 ? '1px solid #4a7abf' : 'none',
+                                        cursor: 'pointer',
+                                        textShadow: active ? '0 -1px 0 rgba(0,0,0,0.4)' : '0 1px 0 rgba(255,255,255,0.7)',
+                                        color: active ? '#fff' : '#2a5a9f',
+                                        background: active
+                                            ? 'linear-gradient(180deg, #5b9bd5 0%, #3a7abf 45%, #2d6aaf 50%, #4a8fd0 100%)'
+                                            : 'linear-gradient(180deg, #fafafa 0%, #e8e8e8 45%, #d8d8d8 50%, #efefef 100%)',
+                                        transition: 'none',
+                                    }}
+                                >
+                                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                                </button>
+                            )
+                        })}
+                    </div>
                 </div>
 
                 {view === "portfolio" ? (
@@ -337,11 +402,12 @@ const EditOverlay = () => {
                                             {safeTags.map((tag: any) => (
                                                 <TableCell key={tag._id}>
                                                     <Select
-                                                        value={row.tags?.[tag._id] || ""}
+                                                        value={row.tags?.[tag._id] ?? ""}
                                                         onChange={(e) => handleChangeAssetTag(row.id, tag._id, e.target.value as string)}
                                                         variant="standard"
                                                         size="small"
                                                         fullWidth
+                                                        displayEmpty
                                                         className="darkTextFields"
                                                     >
                                                         <MenuItem value=""><em>None</em></MenuItem>
@@ -386,73 +452,384 @@ const EditOverlay = () => {
                                 className="dark:text-white dark:border-8 dark:border-darkgreen dark:bg-strongblue dark:rounded-md dark:max-w-[8rem] dark:font-black dark:text-lg dark:text-center tracking-wider">Submit</Button></div>
                     </div>
                 ) : (
-                    <Box sx={{ p: 2 }}>
-                        <Typography variant="h6" sx={{ mb: 2 }}>Manage Tags</Typography>
-                        <Box sx={{ display: 'flex', gap: 2, mb: 4 }}>
-                            <TextField
-                                label="New Tag Name"
-                                variant="outlined"
-                                size="small"
+                    <div style={{ fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif' }}>
+
+                        {/* "Manage Tags" section label */}
+                        <div style={{
+                            textTransform: 'uppercase',
+                            fontSize: '11px',
+                            fontWeight: '700',
+                            color: '#555',
+                            letterSpacing: '0.8px',
+                            marginBottom: '6px',
+                            paddingLeft: '6px',
+                            textShadow: '0 1px 0 rgba(255,255,255,0.8)',
+                        }}>Manage Tags</div>
+
+                        {/* Create tag row — iOS 6 inset grouped input */}
+                        <div style={{
+                            display: 'flex',
+                            gap: '8px',
+                            marginBottom: '18px',
+                            alignItems: 'center',
+                        }}>
+                            <input
+                                placeholder="New tag name"
                                 value={newTagName}
                                 onChange={(e) => setNewTagName(e.target.value)}
-                                fullWidth
+                                onKeyDown={(e) => { if (e.key === "Enter") handleCreateTag() }}
+                                style={{
+                                    flex: 1,
+                                    padding: '8px 12px',
+                                    fontSize: '14px',
+                                    borderRadius: '8px',
+                                    border: '1px solid #aaa',
+                                    boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.18), inset 0 1px 2px rgba(0,0,0,0.1)',
+                                    background: 'linear-gradient(180deg, #e2e2e2 0%, #f5f5f5 100%)',
+                                    outline: 'none',
+                                    color: '#222',
+                                    fontFamily: 'inherit',
+                                }}
                             />
-                            <Button variant="contained" onClick={handleCreateTag} startIcon={<AddCircleOutlineIcon />}>
+                            <button
+                                onClick={handleCreateTag}
+                                style={{
+                                    padding: '8px 16px',
+                                    fontSize: '13px',
+                                    fontWeight: '700',
+                                    borderRadius: '8px',
+                                    border: '1px solid #2a6099',
+                                    cursor: 'pointer',
+                                    color: '#fff',
+                                    background: 'linear-gradient(180deg, #5b9bd5 0%, #3a7abf 45%, #2d6aaf 50%, #4a8fd0 100%)',
+                                    boxShadow: '0 2px 4px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.3)',
+                                    textShadow: '0 -1px 0 rgba(0,0,0,0.4)',
+                                    letterSpacing: '0.2px',
+                                    whiteSpace: 'nowrap',
+                                    fontFamily: 'inherit',
+                                }}
+                            >
                                 Create
-                            </Button>
-                        </Box>
-                        <Box sx={{ maxHeight: '500px', overflowY: 'auto' }}>
-                            {safeTags.map((tag: any) => (
-                                <Accordion key={tag._id} sx={{ mb: 1 }}>
-                                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                                        <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center', pr: 2 }}>
-                                            <TextField
-                                                variant="standard"
-                                                defaultValue={tag.name}
-                                                onClick={(e) => e.stopPropagation()}
-                                                onBlur={(e) => handleRenameTag(tag._id, (e.target as HTMLInputElement).value)}
-                                                sx={{ fontWeight: 'bold' }}
-                                            />
-                                            <IconButton size="small" onClick={(e) => { e.stopPropagation(); handleDeleteTag(tag._id); }} color="error">
-                                                <CloseIcon fontSize="small" />
-                                            </IconButton>
-                                        </Box>
-                                    </AccordionSummary>
-                                    <AccordionDetails>
-                                        <Box sx={{ mb: 2, display: 'flex', gap: 1, alignItems: 'center' }}>
-                                            <TextField
-                                                size="small"
-                                                label="New Option"
-                                                value={newOptionName[tag._id] || ""}
-                                                onChange={(e) => setNewOptionName(prev => ({ ...prev, [tag._id]: e.target.value }))}
-                                            />
-                                            <IconButton onClick={() => handleAddOption(tag._id)} color="primary">
-                                                <AddIcon />
-                                            </IconButton>
-                                        </Box>
-                                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                                            {tag.options && tag.options.map((option: any) => (
-                                                <Paper key={option._id} variant="outlined" sx={{ px: 1, py: 0.5, display: 'flex', alignItems: 'center', gap: 1 }}>
-                                                    <TextField
-                                                        variant="standard"
-                                                        defaultValue={option.name}
-                                                        onBlur={(e) => handleRenameOption(option._id, (e.target as HTMLInputElement).value)}
-                                                        sx={{ width: 80 }}
-                                                        InputProps={{ disableUnderline: true }}
+                            </button>
+                        </div>
+
+                        {/* Tags list */}
+                        <div style={{ maxHeight: '460px', overflowY: 'auto', paddingRight: '2px' }}>
+                            {safeTags.map((tag: any) => {
+                                const isOpen = expandedTag === tag._id
+                                const isEditingTag = editingTagId === tag._id
+                                return (
+                                    <div key={tag._id} style={{ marginBottom: '8px' }}>
+
+                                        {/* Tag row header */}
+                                        <div
+                                            style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'space-between',
+                                                padding: '10px 12px',
+                                                borderRadius: isOpen ? '10px 10px 0 0' : '10px',
+                                                background: 'linear-gradient(180deg, #f0f0f0 0%, #d8d8d8 100%)',
+                                                border: '1px solid #aaa',
+                                                borderBottom: isOpen ? '1px solid #bbb' : '1px solid #aaa',
+                                                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.85), 0 2px 3px rgba(0,0,0,0.15)',
+                                                cursor: isEditingTag ? 'default' : 'pointer',
+                                            }}
+                                            onClick={() => { if (!isEditingTag) setExpandedTag(isOpen ? null : tag._id) }}
+                                        >
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, minWidth: 0 }}>
+                                                {/* Chevron */}
+                                                {!isEditingTag && (
+                                                    <span style={{
+                                                        display: 'inline-block',
+                                                        width: '14px',
+                                                        transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)',
+                                                        transition: 'transform 0.2s ease',
+                                                        color: '#666',
+                                                        fontSize: '12px',
+                                                        userSelect: 'none',
+                                                        flexShrink: 0,
+                                                    }}>▶</span>
+                                                )}
+
+                                                {isEditingTag ? (
+                                                    /* ── Edit mode ── */
+                                                    <input
+                                                        autoFocus
+                                                        value={editingTagValue}
+                                                        onChange={(e) => setEditingTagValue(e.target.value)}
+                                                        onKeyDown={(e) => {
+                                                            if (e.key === "Enter") { handleRenameTag(tag._id, editingTagValue); setEditingTagId(null) }
+                                                            if (e.key === "Escape") setEditingTagId(null)
+                                                        }}
+                                                        onClick={(e) => e.stopPropagation()}
+                                                        style={{
+                                                            flex: 1,
+                                                            padding: '4px 8px',
+                                                            fontSize: '14px',
+                                                            fontWeight: '600',
+                                                            borderRadius: '6px',
+                                                            border: '1px solid #4a7abf',
+                                                            boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.15)',
+                                                            background: 'linear-gradient(180deg, #e0e8f5 0%, #f0f4fb 100%)',
+                                                            outline: 'none',
+                                                            color: '#222',
+                                                            fontFamily: 'inherit',
+                                                        }}
                                                     />
-                                                    <IconButton size="small" onClick={() => handleDeleteOption(option._id)}>
-                                                        <CloseIcon fontSize="small" />
-                                                    </IconButton>
-                                                </Paper>
-                                            ))}
-                                        </Box>
-                                    </AccordionDetails>
-                                </Accordion>
-                            ))}
-                        </Box>
-                    </Box>
+                                                ) : (
+                                                    /* ── View mode ── */
+                                                    <span style={{
+                                                        fontSize: '14px',
+                                                        fontWeight: '600',
+                                                        color: '#222',
+                                                        textShadow: '0 1px 0 rgba(255,255,255,0.7)',
+                                                        flex: 1,
+                                                        overflow: 'hidden',
+                                                        textOverflow: 'ellipsis',
+                                                        whiteSpace: 'nowrap',
+                                                    }}>{tag.name}</span>
+                                                )}
+                                            </div>
+
+                                            {/* Action buttons */}
+                                            <div style={{ display: 'flex', gap: '5px', alignItems: 'center', flexShrink: 0, marginLeft: '8px' }} onClick={(e) => e.stopPropagation()}>
+                                                {isEditingTag ? (
+                                                    <>
+                                                        {/* Confirm */}
+                                                        <button
+                                                            onClick={() => { handleRenameTag(tag._id, editingTagValue); setEditingTagId(null) }}
+                                                            title="Confirm"
+                                                            style={{
+                                                                width: '26px', height: '26px', borderRadius: '50%',
+                                                                border: '1px solid #2a7a00',
+                                                                background: 'linear-gradient(180deg, #6dd46d 0%, #3aaa00 50%, #2a8800 100%)',
+                                                                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.35), 0 1px 3px rgba(0,0,0,0.3)',
+                                                                color: '#fff', fontSize: '14px', cursor: 'pointer',
+                                                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                                fontFamily: 'inherit',
+                                                            }}
+                                                        >✓</button>
+                                                        {/* Cancel */}
+                                                        <button
+                                                            onClick={() => setEditingTagId(null)}
+                                                            title="Cancel"
+                                                            style={{
+                                                                width: '26px', height: '26px', borderRadius: '50%',
+                                                                border: '1px solid #888',
+                                                                background: 'linear-gradient(180deg, #ddd 0%, #aaa 100%)',
+                                                                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.4), 0 1px 3px rgba(0,0,0,0.2)',
+                                                                color: '#444', fontSize: '14px', cursor: 'pointer',
+                                                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                                fontFamily: 'inherit',
+                                                            }}
+                                                        >✕</button>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        {/* Pencil */}
+                                                        <button
+                                                            onClick={() => { setEditingTagId(tag._id); setEditingTagValue(tag.name) }}
+                                                            title="Rename"
+                                                            style={{
+                                                                width: '26px', height: '26px', borderRadius: '50%',
+                                                                border: '1px solid #888',
+                                                                background: 'linear-gradient(180deg, #f5f5f5 0%, #d5d5d5 100%)',
+                                                                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.7), 0 1px 3px rgba(0,0,0,0.2)',
+                                                                color: '#444', fontSize: '13px', cursor: 'pointer',
+                                                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                                fontFamily: 'inherit',
+                                                            }}
+                                                        >✎</button>
+                                                        {/* Delete */}
+                                                        <button
+                                                            onClick={() => handleDeleteTag(tag._id)}
+                                                            title="Delete"
+                                                            style={{
+                                                                width: '26px', height: '26px', borderRadius: '50%',
+                                                                border: '1px solid #a00',
+                                                                background: 'linear-gradient(180deg, #f55 0%, #c00 50%, #a00 100%)',
+                                                                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.3), 0 1px 3px rgba(0,0,0,0.3)',
+                                                                color: '#fff', fontSize: '15px', cursor: 'pointer',
+                                                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                                fontFamily: 'inherit',
+                                                            }}
+                                                        >×</button>
+                                                    </>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* Expanded panel */}
+                                        {isOpen && (
+                                            <div style={{
+                                                border: '1px solid #aaa',
+                                                borderTop: 'none',
+                                                borderRadius: '0 0 10px 10px',
+                                                background: 'linear-gradient(180deg, #e8e8e8 0%, #f2f2f2 100%)',
+                                                boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.1), 0 2px 3px rgba(0,0,0,0.12)',
+                                                padding: '12px',
+                                            }}>
+                                                {/* Add option row */}
+                                                <div style={{ display: 'flex', gap: '8px', marginBottom: '12px', alignItems: 'center' }}>
+                                                    <input
+                                                        placeholder="New option"
+                                                        value={newOptionName[tag._id] || ""}
+                                                        onChange={(e) => setNewOptionName(prev => ({ ...prev, [tag._id]: e.target.value }))}
+                                                        onKeyDown={(e) => { if (e.key === "Enter") handleAddOption(tag._id) }}
+                                                        style={{
+                                                            flex: 1,
+                                                            padding: '6px 10px',
+                                                            fontSize: '13px',
+                                                            borderRadius: '7px',
+                                                            border: '1px solid #aaa',
+                                                            boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.15)',
+                                                            background: 'linear-gradient(180deg, #ddd 0%, #f0f0f0 100%)',
+                                                            outline: 'none',
+                                                            color: '#222',
+                                                            fontFamily: 'inherit',
+                                                        }}
+                                                    />
+                                                    <button
+                                                        onClick={() => handleAddOption(tag._id)}
+                                                        style={{
+                                                            padding: '6px 14px',
+                                                            fontSize: '12px',
+                                                            fontWeight: '700',
+                                                            borderRadius: '7px',
+                                                            border: '1px solid #2a6099',
+                                                            cursor: 'pointer',
+                                                            color: '#fff',
+                                                            background: 'linear-gradient(180deg, #5b9bd5 0%, #3a7abf 45%, #2d6aaf 50%, #4a8fd0 100%)',
+                                                            boxShadow: '0 2px 3px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.3)',
+                                                            textShadow: '0 -1px 0 rgba(0,0,0,0.4)',
+                                                            whiteSpace: 'nowrap',
+                                                            fontFamily: 'inherit',
+                                                        }}
+                                                    >Add</button>
+                                                </div>
+
+                                                {/* Option chips */}
+                                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '7px' }}>
+                                                    {tag.options && tag.options.map((option: any) => {
+                                                        const isEditingOption = editingOptionId === option._id
+                                                        return (
+                                                            <div key={option._id} style={{
+                                                                display: 'flex',
+                                                                alignItems: 'center',
+                                                                gap: '4px',
+                                                                padding: '4px 6px 4px 10px',
+                                                                borderRadius: '12px',
+                                                                border: isEditingOption ? '1px solid #4a7abf' : '1px solid #aaa',
+                                                                background: isEditingOption
+                                                                    ? 'linear-gradient(180deg, #e0e8f5 0%, #f0f4fb 100%)'
+                                                                    : 'linear-gradient(180deg, #fdfdfd 0%, #e4e4e4 100%)',
+                                                                boxShadow: isEditingOption
+                                                                    ? 'inset 0 2px 4px rgba(0,0,0,0.12)'
+                                                                    : 'inset 0 1px 0 rgba(255,255,255,0.9), 0 1px 2px rgba(0,0,0,0.15)',
+                                                            }}>
+                                                                {isEditingOption ? (
+                                                                    <input
+                                                                        autoFocus
+                                                                        value={editingOptionValue}
+                                                                        onChange={(e) => setEditingOptionValue(e.target.value)}
+                                                                        onKeyDown={(e) => {
+                                                                            if (e.key === "Enter") { handleRenameOption(option._id, editingOptionValue); setEditingOptionId(null) }
+                                                                            if (e.key === "Escape") setEditingOptionId(null)
+                                                                        }}
+                                                                        style={{
+                                                                            border: 'none',
+                                                                            background: 'transparent',
+                                                                            fontSize: '12px',
+                                                                            fontWeight: '600',
+                                                                            color: '#222',
+                                                                            outline: 'none',
+                                                                            width: `${Math.max((editingOptionValue.length || 4), 4) * 8}px`,
+                                                                            fontFamily: 'inherit',
+                                                                        }}
+                                                                    />
+                                                                ) : (
+                                                                    <span style={{
+                                                                        fontSize: '12px',
+                                                                        fontWeight: '600',
+                                                                        color: '#333',
+                                                                    }}>{option.name}</span>
+                                                                )}
+
+                                                                {/* Option action buttons */}
+                                                                {isEditingOption ? (
+                                                                    <>
+                                                                        <button
+                                                                            onClick={() => { handleRenameOption(option._id, editingOptionValue); setEditingOptionId(null) }}
+                                                                            title="Confirm"
+                                                                            style={{
+                                                                                width: '18px', height: '18px', borderRadius: '50%',
+                                                                                border: '1px solid #2a7a00',
+                                                                                background: 'linear-gradient(180deg, #6dd46d 0%, #3aaa00 50%, #2a8800 100%)',
+                                                                                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.35)',
+                                                                                color: '#fff', fontSize: '11px', cursor: 'pointer',
+                                                                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                                                padding: 0, flexShrink: 0, fontFamily: 'inherit',
+                                                                            }}
+                                                                        >✓</button>
+                                                                        <button
+                                                                            onClick={() => setEditingOptionId(null)}
+                                                                            title="Cancel"
+                                                                            style={{
+                                                                                width: '18px', height: '18px', borderRadius: '50%',
+                                                                                border: '1px solid #888',
+                                                                                background: 'linear-gradient(180deg, #ddd 0%, #aaa 100%)',
+                                                                                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.4)',
+                                                                                color: '#444', fontSize: '11px', cursor: 'pointer',
+                                                                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                                                padding: 0, flexShrink: 0, fontFamily: 'inherit',
+                                                                            }}
+                                                                        >✕</button>
+                                                                    </>
+                                                                ) : (
+                                                                    <>
+                                                                        <button
+                                                                            onClick={() => { setEditingOptionId(option._id); setEditingOptionValue(option.name) }}
+                                                                            title="Rename"
+                                                                            style={{
+                                                                                width: '18px', height: '18px', borderRadius: '50%',
+                                                                                border: '1px solid #888',
+                                                                                background: 'linear-gradient(180deg, #f5f5f5 0%, #d5d5d5 100%)',
+                                                                                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.7)',
+                                                                                color: '#444', fontSize: '11px', cursor: 'pointer',
+                                                                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                                                padding: 0, flexShrink: 0, fontFamily: 'inherit',
+                                                                            }}
+                                                                        >✎</button>
+                                                                        <button
+                                                                            onClick={() => handleDeleteOption(option._id)}
+                                                                            title="Delete"
+                                                                            style={{
+                                                                                width: '18px', height: '18px', borderRadius: '50%',
+                                                                                border: '1px solid #888',
+                                                                                background: 'linear-gradient(180deg, #bbb 0%, #888 100%)',
+                                                                                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.4)',
+                                                                                color: '#fff', fontSize: '12px', cursor: 'pointer',
+                                                                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                                                padding: 0, flexShrink: 0, fontFamily: 'inherit',
+                                                                            }}
+                                                                        >×</button>
+                                                                    </>
+                                                                )}
+                                                            </div>
+                                                        )
+                                                    })}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    </div>
                 )}
                 <ToastContainer theme={isDarkTheme ? "dark" : "light"} />
+                </div>{/* end padding wrapper */}
             </div>
         </div >)
     )
